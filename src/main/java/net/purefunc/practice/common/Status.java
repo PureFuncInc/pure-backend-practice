@@ -1,4 +1,4 @@
-package net.purefunc.practice.member;
+package net.purefunc.practice.common;
 
 public enum Status {
 
