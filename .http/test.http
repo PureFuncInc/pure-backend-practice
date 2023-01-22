@@ -1,0 +1,22 @@
+###
+POST http://localhost:8080/api/v1.0/members:login
+Content-Type: application/json
+
+{
+  "username": "vincent@purefunc.net",
+  "password": "abcd1234"
+}
+
+> {%
+    client.global.set("bearerToken", response.body.token.toString());
+%}
+
+###
+PATCH http://localhost:8080/api/v1.0/members
+Authorization: Bearer {{bearerToken}}
+Content-Type: application/json
+
+{
+  "oldPassword": "abcd1234",
+  "newPassword": "aaaaaaaa"
+}
