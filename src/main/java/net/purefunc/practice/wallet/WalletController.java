@@ -1,18 +1,17 @@
 package net.purefunc.practice.wallet;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
+import net.purefunc.practice.wallet.data.WalletRequestDTO;
+import net.purefunc.practice.wallet.data.WalletResponseDTO;
+import net.purefunc.practice.wallet.data.WalletTransferRequestDTO;
+import net.purefunc.practice.wallet.data.WalletVO;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "💰 Wallet")
 @RestController
@@ -26,63 +25,54 @@ public class WalletController {
         this.walletService = walletService;
     }
 
-    @Operation(summary = "cc")
+    @Operation(summary = "查詢交易紀錄")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/wallets/transactions")
-    ResponseEntity<List<String>> getWalletsTransactions(Principal principal) {
-        return Optional
-                .of(walletService.getTransactions(principal.getName()))
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RuntimeException("getWalletsTransactions Err"));
+    Page<WalletVO> getWalletsTransactions(
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            Principal principal) {
+        return walletService.getTransactions(principal.getName(), page, size);
     }
 
-    @Operation(summary = "cc")
+    @Operation(summary = "存款")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/wallets:deposit")
-    ResponseEntity<WalletResponseDTO> deposit(
+    WalletResponseDTO deposit(
             @RequestBody WalletRequestDTO walletRequestDTO,
             Principal principal) {
         return walletService
                 .deposit(
                         principal.getName(),
-                        walletRequestDTO.toId,
-                        walletRequestDTO.amount
-                )
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RuntimeException("deposit Err"));
+                        walletRequestDTO.getAmount()
+                );
     }
 
-    @Operation(summary = "cc")
+    @Operation(summary = "提款")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/wallets:withdraw")
-    ResponseEntity<WalletResponseDTO> withdraw(
+    WalletResponseDTO withdraw(
             @RequestBody WalletRequestDTO walletRequestDTO,
             Principal principal) {
         return walletService
                 .withdraw(
                         principal.getName(),
-                        walletRequestDTO.fromId,
-                        walletRequestDTO.amount
-                )
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RuntimeException("withdraw Err"));
+                        walletRequestDTO.getAmount()
+                );
     }
 
-    @Operation(summary = "cc")
+    @Operation(summary = "轉帳")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/wallets:transfer")
-    ResponseEntity<WalletResponseDTO> transfer(
-            @RequestBody WalletRequestDTO walletRequestDTO,
+    WalletResponseDTO transfer(
+            @RequestBody WalletTransferRequestDTO walletTransferRequestDTO,
             Principal principal) {
         return walletService
                 .transfer(
                         principal.getName(),
-                        walletRequestDTO.fromId,
-                        walletRequestDTO.toId,
-                        walletRequestDTO.amount
-                )
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RuntimeException("transfer Err"));
+                        walletTransferRequestDTO.getToId(),
+                        walletTransferRequestDTO.getAmount()
+                );
     }
 
     // LOCK TYPE

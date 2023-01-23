@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.purefunc.practice.config.security.LoginRequestDto;
+import net.purefunc.practice.member.data.MemberPasswordRequestDTO;
+import net.purefunc.practice.member.data.MemberResponseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @Operation(summary = "cc")
+    @Operation(summary = "查詢用戶資料")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/members")
     ResponseEntity<MemberResponseDTO> getMembers(Principal principal) {
@@ -34,6 +36,7 @@ public class MemberController {
                 .orElseThrow(() -> new RuntimeException("getMembers Err"));
     }
 
+    @Operation(summary = "登入")
     @PostMapping("/members:login")
     ResponseEntity<String> postMembersLogin(@RequestBody LoginRequestDto loginRequestDto) {
         return memberService
@@ -46,17 +49,19 @@ public class MemberController {
                 .orElseThrow(() -> new RuntimeException("postMembersLogin Err"));
     }
 
+    @Operation(summary = "修改密碼")
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/members")
     ResponseEntity<Object> patchMembers(
             @RequestBody MemberPasswordRequestDTO memberPasswordRequestDTO,
             Principal principal) {
         return memberService
-                .modifyPassword(principal.getName(), memberPasswordRequestDTO.oldPassword, memberPasswordRequestDTO.newPassword)
+                .modifyPassword(principal.getName(), memberPasswordRequestDTO.getOldPassword(), memberPasswordRequestDTO.getNewPassword())
                 .map(v -> ResponseEntity.noContent().build())
                 .orElseThrow(() -> new RuntimeException("patchMembers Err"));
     }
 
+    @Operation(summary = "凍結用戶")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/members/{username}")
     ResponseEntity<Object> deleteMembers(@PathVariable String username) {

@@ -1,6 +1,6 @@
 package net.purefunc.practice.config.security;
 
-import net.purefunc.practice.member.MemberDAO;
+import net.purefunc.practice.member.MemberRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,15 +13,15 @@ import java.util.List;
 @Component
 public class SpringUserDetailsService implements UserDetailsService {
 
-    private final MemberDAO memberDAO;
+    private final MemberRepository memberRepository;
 
-    public SpringUserDetailsService(MemberDAO memberDAO) {
-        this.memberDAO = memberDAO;
+    public SpringUserDetailsService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberDAO
+        return memberRepository
                 .findByUsername(username)
                 .map(v -> new User(
                                 v.getUsername(),

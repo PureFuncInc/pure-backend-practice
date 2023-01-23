@@ -1,14 +1,14 @@
-package net.purefunc.practice.wallet;
+package net.purefunc.practice.wallet.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.purefunc.practice.common.Status;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Table(name = "wallet")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class WalletPO {
 
     @Id
@@ -29,7 +30,8 @@ public class WalletPO {
 
     BigDecimal balance;
 
-    Status status;
+    @Enumerated(value = EnumType.STRING)
+    WalletStatus status;
 
     @CreatedBy
     String createBy;

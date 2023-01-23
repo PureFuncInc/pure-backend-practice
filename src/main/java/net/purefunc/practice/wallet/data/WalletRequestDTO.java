@@ -1,16 +1,17 @@
-package net.purefunc.practice.member;
+package net.purefunc.practice.wallet.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberPasswordRequestDTO {
+public class WalletRequestDTO {
 
-    String oldPassword;
-    String newPassword;
+    BigDecimal amount;
 }

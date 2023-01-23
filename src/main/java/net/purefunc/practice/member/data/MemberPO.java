@@ -1,4 +1,4 @@
-package net.purefunc.practice.wallet;
+package net.purefunc.practice.member.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,33 +8,33 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "wallet_transaction")
+@Table(name = "member")
 @Entity
-public class WalletTransactionPO {
+@EntityListeners(AuditingEntityListener.class)
+public class MemberPO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    Long walletId;
+    @Column(unique = true)
+    String username;
 
-    OperationType operationType;
+    String password;
 
-    BigDecimal beforeBalance;
+    @Enumerated(value = EnumType.STRING)
+    MemberRole role;
 
-    BigDecimal amount;
-
-    BigDecimal afterBalance;
-
-    String memo;
+    @Enumerated(value = EnumType.STRING)
+    MemberStatus status;
 
     @CreatedBy
     String createBy;
