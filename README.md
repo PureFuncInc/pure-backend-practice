@@ -26,19 +26,19 @@
 
 ## 💪 展現你有以下的能力 (括號內以 Java Spring 為例，其他語言或框架可自行代換)
 | 能力 | 範例技術 |
-| :--- | :---: |
-| 撰寫 RESTFul API 的文件 | springdoc-openapi |
+| :--- | :--- |
+| 撰寫 RESTFul API 的文件 | [springdoc-openapi]() |
 | 設計 RESTFul API 的端點 | Spring Web MVC |
-| 管理 RESTFul API 的權限 | Spring Security |
+| 管理 RESTFul API 的權限 | [Spring Security](https://spring.io/projects/spring-security) |
 | 為 API Endpoint 加上 Cache | Spring Cache |
-| 連接 Relational DB 資料庫 | Spring Data JPA |
-| 操作 SQL 語法 | Spring Data JPA |
-| Transaction | Spring Data JPA |
-| Lock | Spring Data JPA |
-| 查詢資料的分頁 | Spring Data |
-| 連接 NoSQL 資料庫 |  |
-| 排程 | Spring Framework |
-| 測試 | Spring Framework |
-| 部署 | Docker |
-| DevOps |  |
-| 打API | WebClient |
+| 連接 Relational DB 資料庫 | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
+| 操作 SQL 語法 | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
+| Transaction | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
+| Lock | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
+| 查詢資料的分頁 | [Spring Data](https://spring.io/projects/spring-data) |
+| 連接 NoSQL 資料庫 | [Spring Data](https://spring.io/projects/spring-data) |
+| 調用其他 RESTFul API | [Spring Framework](https://spring.io/projects/spring-framework) |
+| 排程 | [Spring Framework](https://spring.io/projects/spring-framework) |
+| 測試 | [Spring Framework](https://spring.io/projects/spring-framework) |
+| 部署 | [Docker](), [Docker-Compose]() |
+| DevOps | [Kubernetes]() |
