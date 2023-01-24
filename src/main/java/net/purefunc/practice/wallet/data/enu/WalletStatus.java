@@ -1,4 +1,4 @@
-package net.purefunc.practice.wallet.data;
+package net.purefunc.practice.wallet.data.enu;
 
 public enum WalletStatus {
 

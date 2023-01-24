@@ -1,13 +1,14 @@
 package net.purefunc.practice.member;
 
-import net.purefunc.practice.config.security.JwtTokenService;
-import net.purefunc.practice.member.data.MemberPO;
-import net.purefunc.practice.member.data.MemberResponseDTO;
-import net.purefunc.practice.member.data.MemberRole;
-import net.purefunc.practice.member.data.MemberStatus;
+import net.purefunc.practice.member.data.enu.MemberRole;
+import net.purefunc.practice.member.data.enu.MemberStatus;
+import net.purefunc.practice.member.data.po.MemberPO;
 import net.purefunc.practice.wallet.WalletRepository;
-import net.purefunc.practice.wallet.data.WalletPO;
-import net.purefunc.practice.wallet.data.WalletStatus;
+import net.purefunc.practice.wallet.data.enu.WalletStatus;
+import net.purefunc.practice.wallet.data.po.WalletPO;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,39 +16,29 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenService jwtTokenService;
     private final MemberRepository memberRepository;
     private final WalletRepository walletRepository;
 
-    public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, MemberRepository memberRepository, WalletRepository walletRepository) {
+    public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, MemberRepository memberRepository, WalletRepository walletRepository) {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
-        this.jwtTokenService = jwtTokenService;
         this.memberRepository = memberRepository;
         this.walletRepository = walletRepository;
     }
 
-    Optional<MemberResponseDTO> query(String username) {
-        return memberRepository
-                .findByUsername(username)
-                .flatMap(v -> walletRepository
-                        .findByMemberId(v.getId())
-                        .map(w -> MemberResponseDTO.builder()
-                                .username(v.getUsername())
-                                .balance(w.getBalance())
-                                .build()
-                        )
-                );
+    @Cacheable(cacheNames = {"members"}, key = "#username")
+    public Optional<MemberPO> query(String username) {
+        return memberRepository.findByUsername(username);
     }
 
-    Optional<String> login(String username, String password) {
+    @CachePut(cacheNames = {"members"}, key = "#result.username")
+    public Optional<MemberPO> login(String username, String password) {
         return memberRepository
                 .findByUsername(username)
                 .map(v -> {
@@ -55,12 +46,18 @@ public class MemberService {
                     return v;
                 })
                 .or(() -> {
+                            MemberRole role = MemberRole.ROLE_USER;
+                            if (username.equals("admin")) {
+                                role = MemberRole.ROLE_ADMIN;
+                            }
+
                             final MemberPO memberPO = memberRepository.save(
                                     MemberPO.builder()
                                             .id(null)
                                             .username(username)
                                             .password(passwordEncoder.encode(password))
-                                            .role(MemberRole.ROLE_USER)
+                                            .about("")
+                                            .role(role)
                                             .status(MemberStatus.ACTIVE)
                                             .build()
                             );
@@ -75,8 +72,17 @@ public class MemberService {
 
                             return Optional.of(memberPO);
                         }
-                )
-                .map(v -> jwtTokenService.generate(v.getUsername(), 60L * 60L * 1000L, UUID.randomUUID().toString()));
+                );
+    }
+
+    @CachePut(cacheNames = {"members"}, key = "#result.username")
+    public Optional<MemberPO> modifyAbout(String username, String about) {
+        return memberRepository
+                .findByUsername(username)
+                .map(v -> {
+                    v.setAbout(about);
+                    return memberRepository.save(v);
+                });
     }
 
     Optional<String> modifyPassword(String username, String oldPassword, String newPassword) {
@@ -90,7 +96,8 @@ public class MemberService {
                 });
     }
 
-    Optional<String> remove(String username) {
+    @CacheEvict(cacheNames = {"members"}, key = "#username")
+    public Optional<MemberPO> remove(String username) {
         return memberRepository
                 .findByUsername(username)
                 .flatMap(v -> {
@@ -101,7 +108,7 @@ public class MemberService {
                             .map(w -> {
                                 w.setStatus(WalletStatus.FREEZE);
                                 walletRepository.save(w);
-                                return v.getUsername();
+                                return v;
                             });
                 });
     }

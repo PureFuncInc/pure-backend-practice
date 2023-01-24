@@ -1,4 +1,4 @@
-package net.purefunc.practice.member.data;
+package net.purefunc.practice.member.data.enu;
 
 public enum MemberRole {
 

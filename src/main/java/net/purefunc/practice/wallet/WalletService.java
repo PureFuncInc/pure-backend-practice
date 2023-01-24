@@ -1,10 +1,12 @@
 package net.purefunc.practice.wallet;
 
 import net.purefunc.practice.member.MemberRepository;
-import net.purefunc.practice.wallet.data.WalletOperationType;
-import net.purefunc.practice.wallet.data.WalletResponseDTO;
-import net.purefunc.practice.wallet.data.WalletTransactionPO;
-import net.purefunc.practice.wallet.data.WalletVO;
+import net.purefunc.practice.wallet.data.dto.WalletResponseDTO;
+import net.purefunc.practice.wallet.data.enu.WalletOperationType;
+import net.purefunc.practice.wallet.data.dto.WalletOpResponseDTO;
+import net.purefunc.practice.wallet.data.po.WalletTransactionPO;
+import net.purefunc.practice.wallet.data.vo.WalletVO;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
@@ -27,15 +29,32 @@ public class WalletService {
         this.walletTransactionRepository = walletTransactionRepository;
     }
 
-    public Page<WalletVO> getTransactions(String name, Integer page, Integer size) {
+    public WalletResponseDTO query(String username) {
         return memberRepository
-                .findByUsername(name)
+                .findByUsername(username)
+                .flatMap(v ->
+                    walletRepository
+                            .findByMemberId(v.getId())
+                            .map(w -> WalletResponseDTO
+                                    .builder()
+                                    .memberId(w.getMemberId())
+                                    .username(v.getUsername())
+                                    .balance(w.getBalance())
+                                    .build()
+                            )
+                )
+                .orElseThrow(() -> new RuntimeException("WalletService query Err"));
+    }
+
+    public Page<WalletVO> queryTransactions(String username, Integer page, Integer size) {
+        return memberRepository
+                .findByUsername(username)
                 .map(v -> walletTransactionRepository.findAllTxRecords(v.getId(), PageRequest.of(page, size)))
-                .orElseThrow(() -> new RuntimeException("WalletService getTransactions Err"));
+                .orElseThrow(() -> new RuntimeException("WalletService queryTransactions Err"));
     }
 
     @Transactional(rollbackOn = {RuntimeException.class})
-    WalletResponseDTO deposit(
+    public WalletOpResponseDTO deposit(
             String username,
             BigDecimal amount) {
         return memberRepository
@@ -58,23 +77,23 @@ public class WalletService {
                                             .beforeBalance(beforeBalance)
                                             .amount(amount)
                                             .afterBalance(afterBalance)
-                                            .memo(WalletOperationType.DEPOSIT.name())
+                                            .memo(WalletOperationType.DEPOSIT.name() + "to " + w.getMemberId())
                                             .build()
                             );
                         }))
-                .map(v -> WalletResponseDTO
+                .map(v -> WalletOpResponseDTO
                         .builder()
-                        .fromId(v.getWalletId())
-                        .fromBalance(v.getBeforeBalance())
-                        .toId(v.getWalletId())
-                        .toBalance(v.getAfterBalance())
+                        .fromMemberId(v.getWalletId())
+                        .fromMemberBalance(v.getBeforeBalance())
+                        .toMemberId(v.getWalletId())
+                        .toMemberBalance(v.getAfterBalance())
                         .build()
                 )
                 .orElseThrow(() -> new RuntimeException("WalletService deposit Err"));
     }
 
     @Transactional(rollbackOn = {RuntimeException.class})
-    WalletResponseDTO withdraw(
+    WalletOpResponseDTO withdraw(
             String username,
             BigDecimal amount) {
         return memberRepository
@@ -97,23 +116,23 @@ public class WalletService {
                                             .beforeBalance(beforeBalance)
                                             .amount(amount)
                                             .afterBalance(afterBalance)
-                                            .memo(WalletOperationType.WITHDRAW.name())
+                                            .memo(WalletOperationType.WITHDRAW.name() + "from " + w.getMemberId())
                                             .build()
                             );
                         }))
-                .map(v -> WalletResponseDTO
+                .map(v -> WalletOpResponseDTO
                         .builder()
-                        .fromId(v.getWalletId())
-                        .fromBalance(v.getBeforeBalance())
-                        .toId(v.getWalletId())
-                        .toBalance(v.getAfterBalance())
+                        .fromMemberId(v.getWalletId())
+                        .fromMemberBalance(v.getBeforeBalance())
+                        .toMemberId(v.getWalletId())
+                        .toMemberBalance(v.getAfterBalance())
                         .build()
                 )
                 .orElseThrow(() -> new RuntimeException("WalletService deposit Err"));
     }
 
     @Transactional(rollbackOn = {RuntimeException.class})
-    WalletResponseDTO transfer(
+    WalletOpResponseDTO transfer(
             String username,
             Long toId,
             BigDecimal amount) {
@@ -134,17 +153,18 @@ public class WalletService {
                                     w2.setBalance(afterBalanceW2);
                                     walletRepository.save(w2);
 
+                                    final String operationUuid = UUID.randomUUID().toString();
                                     final WalletTransactionPO walletTransactionPO1 = walletTransactionRepository.save(
                                             WalletTransactionPO
                                                     .builder()
                                                     .id(null)
                                                     .walletId(w1.getId())
-                                                    .operationUuid(UUID.randomUUID().toString())
+                                                    .operationUuid(operationUuid)
                                                     .operationType(WalletOperationType.TRANSFER_OUT)
                                                     .beforeBalance(beforeBalanceW1)
                                                     .amount(amount)
                                                     .afterBalance(afterBalanceW1)
-                                                    .memo(WalletOperationType.TRANSFER_OUT.name())
+                                                    .memo(WalletOperationType.TRANSFER_OUT.name() + "to " + w2.getMemberId())
                                                     .build()
                                     );
 
@@ -153,24 +173,24 @@ public class WalletService {
                                                     .builder()
                                                     .id(null)
                                                     .walletId(w2.getId())
-                                                    .operationUuid(UUID.randomUUID().toString())
+                                                    .operationUuid(operationUuid)
                                                     .operationType(WalletOperationType.TRANSFER_IN)
                                                     .beforeBalance(beforeBalanceW2)
                                                     .amount(amount)
                                                     .afterBalance(afterBalanceW2)
-                                                    .memo(WalletOperationType.TRANSFER_IN.name())
+                                                    .memo(WalletOperationType.TRANSFER_IN.name() + "from " + w1.getMemberId())
                                                     .build()
                                     );
 
                                     return Pair.of(walletTransactionPO1, walletTransactionPO2);
                                 }))
                 )
-                .map(v -> WalletResponseDTO
+                .map(v -> WalletOpResponseDTO
                         .builder()
-                        .fromId(v.getFirst().getWalletId())
-                        .fromBalance(v.getFirst().getAfterBalance())
-                        .toId(v.getSecond().getWalletId())
-                        .toBalance(v.getSecond().getAfterBalance())
+                        .fromMemberId(v.getFirst().getWalletId())
+                        .fromMemberBalance(v.getFirst().getAfterBalance())
+                        .toMemberId(v.getSecond().getWalletId())
+                        .toMemberBalance(v.getSecond().getAfterBalance())
                         .build()
                 )
                 .orElseThrow(() -> new RuntimeException("WalletService transfer Err"));

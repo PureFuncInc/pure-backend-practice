@@ -1,4 +1,4 @@
-package net.purefunc.practice.member.data;
+package net.purefunc.practice.member.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberPasswordRequestDTO {
+public class MemberAboutRequestDTO {
 
-    String oldPassword;
-
-    String newPassword;
+    String about;
 }

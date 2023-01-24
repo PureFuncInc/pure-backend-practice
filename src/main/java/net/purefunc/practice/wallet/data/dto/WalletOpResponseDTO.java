@@ -1,4 +1,4 @@
-package net.purefunc.practice.wallet.data;
+package net.purefunc.practice.wallet.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,13 +11,13 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalletResponseDTO {
+public class WalletOpResponseDTO {
 
-    Long fromId;
+    Long fromMemberId;
 
-    BigDecimal fromBalance;
+    BigDecimal fromMemberBalance;
 
-    Long toId;
+    Long toMemberId;
 
-    BigDecimal toBalance;
+    BigDecimal toMemberBalance;
 }

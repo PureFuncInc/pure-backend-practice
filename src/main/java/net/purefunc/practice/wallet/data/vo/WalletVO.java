@@ -1,9 +1,10 @@
-package net.purefunc.practice.wallet.data;
+package net.purefunc.practice.wallet.data.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.purefunc.practice.wallet.data.enu.WalletOperationType;
 
 import java.math.BigDecimal;
 

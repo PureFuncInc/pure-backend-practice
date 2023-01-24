@@ -1,6 +1,6 @@
 package net.purefunc.practice.wallet;
 
-import net.purefunc.practice.wallet.data.WalletPO;
+import net.purefunc.practice.wallet.data.po.WalletPO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;

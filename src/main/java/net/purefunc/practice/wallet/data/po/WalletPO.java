@@ -1,9 +1,10 @@
-package net.purefunc.practice.wallet.data;
+package net.purefunc.practice.wallet.data.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.purefunc.practice.wallet.data.enu.WalletStatus;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Builder
@@ -20,7 +22,9 @@ import java.math.BigDecimal;
 @Table(name = "wallet")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class WalletPO {
+public class WalletPO implements Serializable {
+
+    private static final long serialVersionUID = 6024047340357745034L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,10 +38,10 @@ public class WalletPO {
     WalletStatus status;
 
     @CreatedBy
-    String createBy;
+    String createdBy;
 
     @CreatedDate
-    Long createDate;
+    Long createdDate;
 
     @LastModifiedBy
     String lastModifiedBy;
