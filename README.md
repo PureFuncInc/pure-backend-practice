@@ -31,16 +31,16 @@
 | 📝 設計 RESTFul API 的端點 | [Spring Web MVC](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html) |
 | 🔑 管理 RESTFul API 的權限 | [Spring Security](https://spring.io/projects/spring-security) |
 | ⚡️ 為 API Endpoint 加上 Cache | [Spring Cache](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache) |
-| 連接 Relational DB 資料庫 | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
-| 操作 SQL 語法 | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
+| ⛓️ 連接 Relational DB 資料庫 | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
+| 🕹️ 操作 SQL 語法 | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
 | Transaction | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
 | 🔒 Lock | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
-| 查詢資料的分頁 | [Spring Data](https://spring.io/projects/spring-data) |
+| 📖 查詢資料的分頁 | [Spring Data](https://spring.io/projects/spring-data) |
 | 連接 NoSQL 資料庫 | [Spring Data](https://spring.io/projects/spring-data) |
 | 調用其他 RESTFul API | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#rest-client-access) |
-| 🕒 排程 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#scheduling) |
-| 測試 | [Spring Framework]([https://spring.io/projects/spring-framework](https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html)) |
-| 部署 | [Docker](), [Docker-Compose](), [Kubernetes]() |
-| 日誌 | [Elastic Stack](https://www.elastic.co/elastic-stack) |
+| ⏱️ 排程 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#scheduling) |
+| 測試 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html)) |
+| 🧱 部署 | [Docker](), [Docker-Compose](), [Kubernetes]() |
+| 📃 日誌 | [Elastic Stack](https://www.elastic.co/elastic-stack) |
 | 👁️ 可觀測性 | [Spring Actuator](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator), [Grafana Stack](https://grafana.com/products/enterprise/) |
-| 持續集成/佈署 | [GitHub Action]() |
+| ♻️ 持續集成/佈署 | [GitHub Action]() |
