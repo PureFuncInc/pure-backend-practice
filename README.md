@@ -1,22 +1,39 @@
 # pure-backend-practice 📃
 
-## Context
+## 🎆 背景 
 ```
-#年資 < 1年
+#低年資
 #純後端
 #設計你的面試
-#工作上也會用到
+#盤點你的工作技能
 ```
 
-## 做一個有 Member, Wallet 功能的 API Service
-* Swagger
+## 🗻 做一個會員, 錢包的 API Service
+* 👤 會員
+  * 註冊會員
+  * 登入會員
+  * 查詢會員資料
+  * 更新會員資料
+  * 停用會員
+* 💰 錢包
+  * 存款
+  * 提款
+  * 轉帳
+  * 查詢餘額
+  * 查詢交易紀錄  
+
+## 💪 展現你有以下的能力
+* OpenAPI
 * RESTFul
+* Security
 * Cache
 * ORM
-* Raw SQL 
+* Pagination
+* Raw SQL
+* Transaction
+* Lock 
 * NoSQL
-* @Transactional
-* Security
+* Schedule
 * Test
 * Deployment
 * DevOps
