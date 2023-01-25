@@ -38,7 +38,7 @@
 | 📖 查詢資料的分頁 | [Spring Data](https://spring.io/projects/spring-data) |
 | v🔗 連接 NoSQL 資料庫 | [Spring Data](https://spring.io/projects/spring-data) |
 | 🗣️ 調用其他 RESTFul API | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#rest-client-access) |
-| v⏱️ 排程 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#scheduling) |
+| ⏱️ 排程 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#scheduling) |
 | v🧰 測試 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html) |
 | v🧱 部署 | [Docker](), [Docker-Compose](), [Kubernetes]() |
 | v📃 日誌 | [Elastic Stack](https://www.elastic.co/elastic-stack) |
