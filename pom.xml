@@ -15,6 +15,7 @@
     <description>pure-backend-practice</description>
     <properties>
         <java.version>11</java.version>
+<!--        <GITHUB_PUBLISH_TOKEN>get_from_argument</GITHUB_PUBLISH_TOKEN>-->
     </properties>
     <dependencies>
         <dependency>
@@ -114,7 +115,11 @@
                         <image>openjdk:11.0.16-jre-slim</image>
                     </from>
                     <to>
-                        <image>registry.hub.docker.com/purefuncinc/${project.artifactId}:${project.version}</image>
+                        <image>ghcr.io/purefuncinc/${project.artifactId}:${project.version}</image>
+                        <auth>
+                            <username>PureFuncInc</username>
+                            <password>${env.GITHUB_PUBLISH_TOKEN}</password>
+                        </auth>
                     </to>
                     <container>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
@@ -125,14 +130,6 @@
                         </entrypoint>
                     </container>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
