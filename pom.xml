@@ -105,7 +105,35 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <from>
+                        <image>openjdk:11.0.16-jre-slim</image>
+                    </from>
+                    <to>
+                        <image>registry.hub.docker.com/purefuncinc/${project.artifactId}:${project.version}</image>
+                    </to>
+                    <container>
+                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        <entrypoint>
+                            <arg>/bin/sh</arg>
+                            <arg>-c</arg>
+                            <arg>java -Xms1024m -Xmx1024m -Dspring.profiles.active=${activeProfiles} -cp /app/resources:/app/classes:/app/libs/* net.purefunc.practice.PureBackendPracticeApplication</arg>
+                        </entrypoint>
+                    </container>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

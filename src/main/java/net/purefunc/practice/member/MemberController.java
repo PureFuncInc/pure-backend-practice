@@ -46,6 +46,7 @@ public class MemberController {
                         .id(v.getId())
                         .username(v.getUsername())
                         .about(v.getAbout())
+                        .avatarLink(v.getAvatarLink())
                         .role(v.getRole())
                         .createdDateStr(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(OffsetDateTime.ofInstant(Instant.ofEpochMilli(v.getCreatedDate()), ZoneOffset.ofHours(8))))
                         .build()

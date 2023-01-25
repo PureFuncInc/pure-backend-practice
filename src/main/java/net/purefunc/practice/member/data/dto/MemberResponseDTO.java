@@ -21,6 +21,8 @@ public class MemberResponseDTO {
 
     String about;
 
+    String avatarLink;
+
     MemberRole role;
 
     String createdDateStr;

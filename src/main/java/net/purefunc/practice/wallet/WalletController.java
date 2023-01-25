@@ -33,16 +33,6 @@ public class WalletController {
         return walletService.query(principal.getName());
     }
 
-    @Operation(summary = "查詢交易紀錄")
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/wallets/transactions")
-    Page<WalletVO> getWalletsTransactions(
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "10") Integer size,
-            Principal principal) {
-        return walletService.queryTransactions(principal.getName(), page, size);
-    }
-
     @Operation(summary = "存款")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/wallets:deposit")
@@ -51,19 +41,6 @@ public class WalletController {
             Principal principal) {
         return walletService
                 .deposit(
-                        principal.getName(),
-                        walletRequestDTO.getAmount()
-                );
-    }
-
-    @Operation(summary = "提款")
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/wallets:withdraw")
-    WalletOpResponseDTO withdraw(
-            @RequestBody WalletRequestDTO walletRequestDTO,
-            Principal principal) {
-        return walletService
-                .withdraw(
                         principal.getName(),
                         walletRequestDTO.getAmount()
                 );
@@ -81,6 +58,29 @@ public class WalletController {
                         walletTransferRequestDTO.getToMemberId(),
                         walletTransferRequestDTO.getAmount()
                 );
+    }
+
+    @Operation(summary = "提款")
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/wallets:withdraw")
+    WalletOpResponseDTO withdraw(
+            @RequestBody WalletRequestDTO walletRequestDTO,
+            Principal principal) {
+        return walletService
+                .withdraw(
+                        principal.getName(),
+                        walletRequestDTO.getAmount()
+                );
+    }
+
+    @Operation(summary = "查詢交易紀錄")
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/wallets/transactions")
+    Page<WalletVO> getWalletsTransactions(
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            Principal principal) {
+        return walletService.queryTransactions(principal.getName(), page, size);
     }
 
     // LOCK TYPE

@@ -1,0 +1,58 @@
+spring:
+  profiles:
+    active: ide
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+springdoc:
+  swagger-ui:
+    doc-expansion: none
+    operations-sorter: alpha
+    tags-sorter: alpha
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: ide
+  redis:
+    password: rootroot
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: rootroot
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  redis:
+    host: redis
+    password: rootroot
+  datasource:
+    url: jdbc:postgresql://postgresql:5432/postgres
+    username: postgres
+    password: rootroot

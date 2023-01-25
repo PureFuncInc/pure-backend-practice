@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  #3662
+  - job_name: "prometheus"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+  #4701
+  - job_name: "pure-backend-practice"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["pure-backend-practice:8080"]
+    metrics_path: /actuator/prometheus
+
+  #763
+  - job_name: "redis_exporter"
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ "redis-exporter:9121" ]
+  #9628
+  - job_name: postgresql_exporter
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ "postgresql-exporter:9187" ]

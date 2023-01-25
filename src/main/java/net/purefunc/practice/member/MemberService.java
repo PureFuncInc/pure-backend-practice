@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class MemberService {
     private final AuthenticationManager authenticationManager;
     private final MemberRepository memberRepository;
     private final WalletRepository walletRepository;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, MemberRepository memberRepository, WalletRepository walletRepository) {
         this.passwordEncoder = passwordEncoder;
@@ -46,6 +48,10 @@ public class MemberService {
                     return v;
                 })
                 .or(() -> {
+                            String randomAvatar = restTemplate
+                                    .getForEntity("https://random.dog/woof", String.class)
+                                    .getBody();
+
                             MemberRole role = MemberRole.ROLE_USER;
                             if (username.equals("admin")) {
                                 role = MemberRole.ROLE_ADMIN;
@@ -57,6 +63,7 @@ public class MemberService {
                                             .username(username)
                                             .password(passwordEncoder.encode(password))
                                             .about("")
+                                            .avatarLink(String.format("https://random.dog/%s", randomAvatar))
                                             .role(role)
                                             .status(MemberStatus.ACTIVE)
                                             .build()

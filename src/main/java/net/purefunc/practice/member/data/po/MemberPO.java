@@ -37,6 +37,8 @@ public class MemberPO implements Serializable {
 
     String about;
 
+    String avatarLink;
+
     @Enumerated(value = EnumType.STRING)
     MemberRole role;
 
