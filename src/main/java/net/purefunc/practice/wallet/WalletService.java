@@ -93,7 +93,7 @@ public class WalletService {
     }
 
     @Transactional(rollbackOn = {RuntimeException.class})
-    WalletOpResponseDTO withdraw(
+    public WalletOpResponseDTO withdraw(
             String username,
             BigDecimal amount) {
         return memberRepository
@@ -132,7 +132,7 @@ public class WalletService {
     }
 
     @Transactional(rollbackOn = {RuntimeException.class})
-    WalletOpResponseDTO transfer(
+    public WalletOpResponseDTO transfer(
             String username,
             Long toId,
             BigDecimal amount) {

@@ -15,7 +15,6 @@
     <description>pure-backend-practice</description>
     <properties>
         <java.version>11</java.version>
-<!--        <GITHUB_PUBLISH_TOKEN>get_from_argument</GITHUB_PUBLISH_TOKEN>-->
     </properties>
     <dependencies>
         <dependency>

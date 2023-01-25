@@ -9,6 +9,8 @@ import net.purefunc.practice.wallet.data.po.WalletPO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,13 +27,21 @@ public class MemberService {
     private final AuthenticationManager authenticationManager;
     private final MemberRepository memberRepository;
     private final WalletRepository walletRepository;
+    private final StringRedisTemplate stringRedisTemplate;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, MemberRepository memberRepository, WalletRepository walletRepository) {
+    public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, MemberRepository memberRepository, WalletRepository walletRepository, StringRedisTemplate stringRedisTemplate) {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.memberRepository = memberRepository;
         this.walletRepository = walletRepository;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
+
+    @Scheduled(cron = "*/10 * * * * *")
+    public void fetchRandomAvatarLink() {
+        Optional.ofNullable(restTemplate.getForEntity("https://random.dog/woof", String.class).getBody())
+                .map(v -> stringRedisTemplate.opsForSet().add("randomAvatarLinks", v));
     }
 
     @Cacheable(cacheNames = {"members"}, key = "#username")
@@ -48,9 +58,10 @@ public class MemberService {
                     return v;
                 })
                 .or(() -> {
-                            String randomAvatar = restTemplate
-                                    .getForEntity("https://random.dog/woof", String.class)
-                                    .getBody();
+                            String randomAvatarLink = stringRedisTemplate.opsForSet().randomMember("randomAvatarLinks");
+                            if (randomAvatarLink.isBlank()) {
+                                randomAvatarLink = restTemplate.getForEntity("https://random.dog/woof", String.class).getBody();
+                            }
 
                             MemberRole role = MemberRole.ROLE_USER;
                             if (username.equals("admin")) {
@@ -63,7 +74,7 @@ public class MemberService {
                                             .username(username)
                                             .password(passwordEncoder.encode(password))
                                             .about("")
-                                            .avatarLink(String.format("https://random.dog/%s", randomAvatar))
+                                            .avatarLink(String.format("https://random.dog/%s", randomAvatarLink))
                                             .role(role)
                                             .status(MemberStatus.ACTIVE)
                                             .build()
@@ -92,7 +103,7 @@ public class MemberService {
                 });
     }
 
-    Optional<String> modifyPassword(String username, String oldPassword, String newPassword) {
+    public Optional<String> modifyPassword(String username, String oldPassword, String newPassword) {
         return memberRepository
                 .findByUsername(username)
                 .filter(v -> passwordEncoder.matches(oldPassword, v.getPassword()))
