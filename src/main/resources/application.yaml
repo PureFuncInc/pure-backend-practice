@@ -6,7 +6,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -54,6 +54,9 @@ spring:
   config:
     activate:
       on-profile: docker
+  jpa:
+    hibernate:
+      ddl-auto: update
   redis:
     host: redis
     password: rootroot

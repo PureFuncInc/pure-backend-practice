@@ -1,6 +1,24 @@
 spring:
   profiles:
     active: test
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
 
 ---
 
@@ -8,3 +26,5 @@ spring:
   config:
     activate:
       on-profile: test
+  redis:
+    password: rootroot

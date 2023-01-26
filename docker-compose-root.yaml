@@ -86,7 +86,7 @@ services:
       - default
 
   grafana:
-    image: grafana/grafana:latest
+    image: bitnami/grafana:latest
     expose:
       - 3000
     ports:
@@ -95,7 +95,7 @@ services:
       - default
 
   loki:
-    image: grafana/loki:latest
+    image: bitnami/grafana-loki:latest
     expose:
       - 3100
     ports:
@@ -104,7 +104,7 @@ services:
       - default
 
   prometheus:
-    image: prom/prometheus:latest
+    image: bitnami/prometheus:latest
     expose:
       - 9090
     ports:
