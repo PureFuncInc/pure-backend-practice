@@ -39,8 +39,8 @@
 | 🔗 連接 NoSQL 資料庫 | [Spring Data](https://spring.io/projects/spring-data) |
 | 🗣️ 調用其他 RESTFul API | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#rest-client-access) |
 | ⏱️ 排程 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#scheduling) |
-| v🧰 測試 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html) |
-| v🧱 部署 | [Docker](https://github.com/GoogleContainerTools/jib), [Kubernetes](https://k3d.io/) |
+| 🧰 測試 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html) |
+| 🧱 部署 | [jib](https://github.com/GoogleContainerTools/jib), [Docker Compose](https://docs.docker.com/compose/) |
 | 📃 日誌 | [Grafana Stack, Loki](https://grafana.com/products/enterprise/) |
 | 👁️ 可觀測性 | [Spring Actuator](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator), [Grafana Stack](https://grafana.com/products/enterprise/) |
 | ♻️ 持續集成/佈署 | [GitHub Action](https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven) |
