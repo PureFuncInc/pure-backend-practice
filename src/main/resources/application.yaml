@@ -38,6 +38,11 @@ spring:
       on-profile: ide
   redis:
     password: rootroot
+  data:
+    mongodb:
+      username: mongo
+      password: mongo
+      database: mongo
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
@@ -52,6 +57,12 @@ spring:
   redis:
     host: redis
     password: rootroot
+  data:
+    mongodb:
+      host: mongodb
+      username: mongo
+      password: mongo
+      database: mongo
   datasource:
     url: jdbc:postgresql://postgresql:5432/postgres
     username: postgres

@@ -6,8 +6,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import net.purefunc.practice.config.security.JwtTokenService;
 import net.purefunc.practice.config.security.LoginRequestDto;
 import net.purefunc.practice.member.data.dto.MemberAboutRequestDTO;
+import net.purefunc.practice.member.data.dto.MemberLoginResponseDTO;
 import net.purefunc.practice.member.data.dto.MemberPasswordRequestDTO;
 import net.purefunc.practice.member.data.dto.MemberResponseDTO;
+import net.purefunc.practice.member.data.po.MemberLoginDocument;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,6 +103,16 @@ public class MemberController {
                 .remove(username)
                 .map(v -> ResponseEntity.noContent().build())
                 .orElseThrow(() -> new RuntimeException("deleteMembers Err"));
+    }
+
+    @Operation(summary = "登入記錄")
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/members/records")
+    Page<MemberLoginResponseDTO> getMembersRecords(
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            Principal principal) {
+        return memberService.queryMembersRecords(principal.getName(), page, size);
     }
 
     // 200, 201, http code

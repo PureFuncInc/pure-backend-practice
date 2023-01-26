@@ -1,7 +1,10 @@
 package net.purefunc.practice.member;
 
+import net.purefunc.practice.member.data.dto.MemberLoginResponseDTO;
+import net.purefunc.practice.member.data.enu.MemberLoginType;
 import net.purefunc.practice.member.data.enu.MemberRole;
 import net.purefunc.practice.member.data.enu.MemberStatus;
+import net.purefunc.practice.member.data.po.MemberLoginDocument;
 import net.purefunc.practice.member.data.po.MemberPO;
 import net.purefunc.practice.wallet.WalletRepository;
 import net.purefunc.practice.wallet.data.enu.WalletStatus;
@@ -9,6 +12,8 @@ import net.purefunc.practice.wallet.data.po.WalletPO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -27,14 +36,16 @@ public class MemberService {
     private final AuthenticationManager authenticationManager;
     private final MemberRepository memberRepository;
     private final WalletRepository walletRepository;
+    private final MemberLoginRepository memberLoginRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, MemberRepository memberRepository, WalletRepository walletRepository, StringRedisTemplate stringRedisTemplate) {
+    public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, MemberRepository memberRepository, WalletRepository walletRepository, MemberLoginRepository memberLoginRepository, StringRedisTemplate stringRedisTemplate) {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.memberRepository = memberRepository;
         this.walletRepository = walletRepository;
+        this.memberLoginRepository = memberLoginRepository;
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
@@ -55,6 +66,15 @@ public class MemberService {
                 .findByUsername(username)
                 .map(v -> {
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+                    memberLoginRepository.save(
+                            MemberLoginDocument
+                                    .builder()
+                                    .id(null)
+                                    .username(username)
+                                    .type(MemberLoginType.LOGIN)
+                                    .build()
+                    );
+
                     return v;
                 })
                 .or(() -> {
@@ -85,6 +105,14 @@ public class MemberService {
                                             .memberId(memberPO.getId())
                                             .balance(BigDecimal.ZERO)
                                             .status(WalletStatus.ACTIVE)
+                                            .build()
+                            );
+                            memberLoginRepository.save(
+                                    MemberLoginDocument
+                                            .builder()
+                                            .id(null)
+                                            .username(username)
+                                            .type(MemberLoginType.SIGNUP)
                                             .build()
                             );
 
@@ -129,5 +157,17 @@ public class MemberService {
                                 return v;
                             });
                 });
+    }
+
+    public Page<MemberLoginResponseDTO> queryMembersRecords(String username, Integer page, Integer size) {
+        return memberLoginRepository
+                .findAllByUsernameOrderByCreatedByDesc(username, PageRequest.of(page, size))
+                .map(v -> MemberLoginResponseDTO
+                        .builder()
+                        .username(v.getUsername())
+                        .type(v.getType())
+                        .createdBy(v.getCreatedBy())
+                        .createdDateStr(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(OffsetDateTime.ofInstant(Instant.ofEpochMilli(v.getCreatedDate()), ZoneOffset.ofHours(8))))
+                        .build());
     }
 }
