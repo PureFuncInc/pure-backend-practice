@@ -36,7 +36,7 @@
 | 💫 Transaction | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
 | 🔒 Lock | [Spring Data JPA](https://spring.io/projects/spring-data-jpa) |
 | 📖 查詢資料的分頁 | [Spring Data](https://spring.io/projects/spring-data) |
-| v🔗 連接 NoSQL 資料庫 | [Spring Data](https://spring.io/projects/spring-data) |
+| 🔗 連接 NoSQL 資料庫 | [Spring Data](https://spring.io/projects/spring-data) |
 | 🗣️ 調用其他 RESTFul API | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#rest-client-access) |
 | ⏱️ 排程 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#scheduling) |
 | v🧰 測試 | [Spring Framework](https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html) |
