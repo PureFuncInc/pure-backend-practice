@@ -73,6 +73,18 @@ services:
     networks:
       - default
 
+  mongodb-exporter:
+    image: bitnami/mongodb-exporter:latest
+    expose:
+      - 9216
+    ports:
+      - "9216:9216"
+    command:
+      - '--mongodb.uri=mongodb://root:rootroot@mongodb:27017/admin?ssl=false'
+      - '--collect-all'
+    networks:
+      - default
+
   grafana:
     image: grafana/grafana:latest
     expose:

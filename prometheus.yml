@@ -26,8 +26,15 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: [ "redis-exporter:9121" ]
+
   #9628
   - job_name: postgresql_exporter
     scrape_interval: 5s
     static_configs:
       - targets: [ "postgresql-exporter:9187" ]
+
+  # https://github.com/percona/mongodb_exporter
+  - job_name: mongodb_exporter
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ "mongodb-exporter:9216" ]
