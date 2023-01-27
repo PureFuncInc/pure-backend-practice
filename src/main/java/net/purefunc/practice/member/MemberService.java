@@ -9,6 +9,7 @@ import net.purefunc.practice.member.data.po.MemberPO;
 import net.purefunc.practice.wallet.WalletRepository;
 import net.purefunc.practice.wallet.data.enu.WalletStatus;
 import net.purefunc.practice.wallet.data.po.WalletPO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,20 +39,24 @@ public class MemberService {
     private final WalletRepository walletRepository;
     private final MemberLoginRepository memberLoginRepository;
     private final StringRedisTemplate stringRedisTemplate;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
-    public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, MemberRepository memberRepository, WalletRepository walletRepository, MemberLoginRepository memberLoginRepository, StringRedisTemplate stringRedisTemplate) {
+    @Value("${custom.avatar.uri}")
+    private String avatarUri;
+
+    public MemberService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, MemberRepository memberRepository, WalletRepository walletRepository, MemberLoginRepository memberLoginRepository, StringRedisTemplate stringRedisTemplate, RestTemplate restTemplate) {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.memberRepository = memberRepository;
         this.walletRepository = walletRepository;
         this.memberLoginRepository = memberLoginRepository;
         this.stringRedisTemplate = stringRedisTemplate;
+        this.restTemplate = restTemplate;
     }
 
     @Scheduled(cron = "*/10 * * * * *")
     public void fetchRandomAvatarLink() {
-        Optional.ofNullable(restTemplate.getForEntity("https://random.dog/woof", String.class).getBody())
+        Optional.ofNullable(restTemplate.getForEntity(avatarUri, String.class).getBody())
                 .map(v -> stringRedisTemplate.opsForSet().add("randomAvatarLinks", v));
     }
 
@@ -79,8 +84,8 @@ public class MemberService {
                 })
                 .or(() -> {
                             String randomAvatarLink = stringRedisTemplate.opsForSet().randomMember("randomAvatarLinks");
-                            if (randomAvatarLink.isBlank()) {
-                                randomAvatarLink = restTemplate.getForEntity("https://random.dog/woof", String.class).getBody();
+                            if (randomAvatarLink == null || randomAvatarLink.isBlank()) {
+                                randomAvatarLink = restTemplate.getForEntity(avatarUri, String.class).getBody();
                             }
 
                             MemberRole role = MemberRole.ROLE_USER;

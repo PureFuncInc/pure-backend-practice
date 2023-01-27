@@ -1,7 +1,7 @@
 spring:
   profiles:
-#    active: ide
-    active: arm
+    active: ide
+#    active: arm
   datasource:
     driver-class-name: org.postgresql.Driver
   jpa:
@@ -30,6 +30,9 @@ springdoc:
     doc-expansion: none
     operations-sorter: alpha
     tags-sorter: alpha
+custom:
+  avatar:
+    uri: https://random.dog/woof
 
 ---
 

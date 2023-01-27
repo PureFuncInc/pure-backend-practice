@@ -55,6 +55,7 @@ import java.util.List;
 public class CustomPageImpl<T> extends PageImpl<T> {
 
     private static final long serialVersionUID = -6080041821611776363L;
+
     public JsonNode pageable;
     public boolean last;
     public int totalPages;

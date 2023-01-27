@@ -8,8 +8,15 @@ import net.purefunc.practice.member.data.dto.MemberLoginResponseDTO;
 import net.purefunc.practice.member.data.dto.MemberPasswordRequestDTO;
 import net.purefunc.practice.member.data.dto.MemberResponseDTO;
 import net.purefunc.practice.member.data.enu.MemberRole;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,22 +35,29 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.Random;
+
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 class MemberTests {
 
+    private static final MockWebServer mockWebServer = new MockWebServer();
+    private static final int mockWebServerPort = new Random(new Date().getTime()).nextInt(10000) + 50000;
+
     @Container
-    private final static GenericContainer redisContainer = new GenericContainer("redis:7")
+    private static final GenericContainer redisContainer = new GenericContainer("redis:7")
             .withEnv("REDIS_REPLICATION_MODE", "master")
             .withEnv("REDIS_PASSWORD", "rootroot")
             .withExposedPorts(6379);
 
     @Container
-    private final static PostgreSQLContainer postgresqlContainer = new PostgreSQLContainer("postgres:15");
+    private static final PostgreSQLContainer postgresqlContainer = new PostgreSQLContainer("postgres:15");
 
     @Container
-    private final static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:6");
+    private static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:6");
 
     @Autowired
     private RestTemplate restTemplate;
@@ -56,10 +70,40 @@ class MemberTests {
 
     @DynamicPropertySource
     static void registerPgProperties(DynamicPropertyRegistry registry) {
+        registry.add("custom.avatar.uri", () -> String.format("http://localhost:%d", mockWebServerPort));
+        registry.add("spring.redis.port", () -> redisContainer.getMappedPort(6379).toString());
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
         registry.add("spring.datasource.url", postgresqlContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgresqlContainer::getUsername);
         registry.add("spring.datasource.password", postgresqlContainer::getPassword);
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        try {
+            mockWebServer.start(mockWebServerPort);
+            mockWebServer.setDispatcher(new Dispatcher() {
+                @Override
+                public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) throws InterruptedException {
+                    if (recordedRequest.getPath().matches("/")) {
+                        return new MockResponse().setBody("123.jpeg");
+                    } else {
+                        return new MockResponse().setResponseCode(404);
+                    }
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @AfterAll
+    static void afterAll() {
+        try {
+            mockWebServer.shutdown();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
