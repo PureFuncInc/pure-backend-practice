@@ -80,8 +80,8 @@ services:
     ports:
       - "9216:9216"
     command:
-      - '--mongodb.uri=mongodb://root:rootroot@mongodb:27017/admin?ssl=false'
-      - '--collect-all'
+      - "--mongodb.uri=mongodb://root:rootroot@mongodb:27017/admin?ssl=false"
+      - "--collect-all"
     networks:
       - default
 
@@ -112,7 +112,7 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - "--config.file=/etc/prometheus/prometheus.yml"
     networks:
       - default
 
