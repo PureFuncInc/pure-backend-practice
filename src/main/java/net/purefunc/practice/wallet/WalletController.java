@@ -75,7 +75,7 @@ public class WalletController {
 
     @Operation(summary = "查詢交易紀錄")
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/wallets/transactions")
+    @GetMapping("/wallets/transactions")
     Page<WalletVO> getWalletsTransactions(
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size,
