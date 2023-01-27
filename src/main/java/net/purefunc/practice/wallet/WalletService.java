@@ -1,12 +1,11 @@
 package net.purefunc.practice.wallet;
 
 import net.purefunc.practice.member.MemberRepository;
+import net.purefunc.practice.wallet.data.dto.WalletOpResponseDTO;
 import net.purefunc.practice.wallet.data.dto.WalletResponseDTO;
 import net.purefunc.practice.wallet.data.enu.WalletOperationType;
-import net.purefunc.practice.wallet.data.dto.WalletOpResponseDTO;
 import net.purefunc.practice.wallet.data.po.WalletTransactionPO;
 import net.purefunc.practice.wallet.data.vo.WalletVO;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
@@ -33,15 +32,15 @@ public class WalletService {
         return memberRepository
                 .findByUsername(username)
                 .flatMap(v ->
-                    walletRepository
-                            .findByMemberId(v.getId())
-                            .map(w -> WalletResponseDTO
-                                    .builder()
-                                    .memberId(w.getMemberId())
-                                    .username(v.getUsername())
-                                    .balance(w.getBalance())
-                                    .build()
-                            )
+                        walletRepository
+                                .findByMemberId(v.getId())
+                                .map(w -> WalletResponseDTO
+                                        .builder()
+                                        .memberId(w.getMemberId())
+                                        .username(v.getUsername())
+                                        .balance(w.getBalance())
+                                        .build()
+                                )
                 )
                 .orElseThrow(() -> new RuntimeException("WalletService query Err"));
     }

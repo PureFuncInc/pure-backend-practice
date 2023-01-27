@@ -9,7 +9,6 @@ import net.purefunc.practice.member.data.dto.MemberAboutRequestDTO;
 import net.purefunc.practice.member.data.dto.MemberLoginResponseDTO;
 import net.purefunc.practice.member.data.dto.MemberPasswordRequestDTO;
 import net.purefunc.practice.member.data.dto.MemberResponseDTO;
-import net.purefunc.practice.member.data.po.MemberLoginDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

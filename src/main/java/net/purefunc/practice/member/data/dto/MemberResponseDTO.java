@@ -6,9 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.purefunc.practice.member.data.enu.MemberRole;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-
 @Builder
 @Data
 @NoArgsConstructor

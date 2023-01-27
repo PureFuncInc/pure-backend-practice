@@ -3,7 +3,6 @@ package net.purefunc.practice;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.Getter;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 

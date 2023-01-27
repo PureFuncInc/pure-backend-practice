@@ -25,7 +25,7 @@ import java.io.Serializable;
 public class MemberPO implements Serializable {
 
     private static final long serialVersionUID = -7853427416004116464L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
